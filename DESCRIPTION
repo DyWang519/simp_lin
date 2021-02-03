@@ -1,0 +1,16 @@
+Package: simplin
+Type: Package
+Title: Conducts linear regression with C++ implementation.
+Version: 1.0
+Date: 2021-02-03
+Author: Duoyu Wang
+Maintainer: Duoyu.Wang@colostate.edu
+Description: This package conducts linear regression with C++ implementation.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Imports: Rcpp (>= 1.0.6)
+LinkingTo: Rcpp; RcppArmadillo
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

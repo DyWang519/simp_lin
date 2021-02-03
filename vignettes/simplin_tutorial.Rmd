@@ -1,0 +1,77 @@
+---
+title: "Tutorial for simple linear regression"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tutorial for simple linear regression}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+### What is a linear regression?
+
+A linear regression is a statistical model that analyzes the relationship between a response variable (often called y) and one or more variables and their interactions (often called x or explanatory variables). You make this kind of relationships in your head all the time, for example when you calculate the age of a child based on her height, you are assuming the older she is, the taller she will be. Linear regression is one of the most basic statistical models out there, its results can be interpreted by almost everyone, and it has been around since the 19th century. This is precisely what makes linear regression so popular. It is simple, and it has survived for hundreds of years. Even though it is not as sophisticated as other algorithms like artificial neural networks or random forests, according to a survey made by KD Nuggets, regression was the algorithm most used by data scientists in 2016 and 2017. It is even predicted it is still going to be the used in year 2118!
+
+### Creating a linear regression
+
+Not every problem can be solved with the same algorithm. In this case, linear regression assumes that there exists a linear relationship between the response variable and the explanatory variables. This means that you can fit a line between the two (or more variables).
+
+To illustrate how to use `simpLin`, we will use a data set called `mtcars` which is available in `R` and can be obtained with the command. 
+
+```{r}
+data("mtcars")
+```
+
+The data was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973–74 models). This data set contains information on various cars, including the car's miles per gallon (mpg), weight (wt), horse power (hp), and number of cylinders(cyl). For this tutorial, we are interested in investigating that the relationship between the miles per gallon and the car's weight is linear. In order to do this, we must first load the `simpLin` package
+
+```{r}
+library(simpLin)
+```
+
+before specifying which variable is our independent variable $(x)$ and which is our dependent variable $(y)$. Note, both arguments must be numeric vectors.
+
+```{r}
+mlm <- simp_lin_R(x = mtcars$wt, y = mtcars$mpg)
+```
+
+### What is output?
+
+After running linear regression, the output is saved to a variable called `mlm`. Notice that this object is a list:
+
+```{r}
+class(mlm)
+```
+
+Let's explain the each component of the output.
+
+* `coef`: a two by one matrix of the estimated regression coefficients where the (1, 1) element is the estimate for the intercept (or $\hat{\beta}_{0}$) and the (2, 1) element is the estimate for the slope (or $\hat{\beta}_{1}$)
+* `std_error`: a two by one matrix of the estimated standard errors for the coefficients where the (1, 1) element is the standard error for the intercept (or $Se_{\hat{\beta_{0}}}$) and the (2, 1) element is the standard error for the slope (or $Se_{\hat{\beta_{1}}}$).
+* `conf_interval`: a two by two matrix representing 95% confidence intervals for the population intercept and slope. The first row is the 95% confidence interval for the intercept and the second row is the 95% confidence interval for the slope.
+* `residuals`: an $n$ by 1 matrix representing the residuals associated with each observation. For a given observation $i$, the $i$th element of the matrix is given by $y_i - \hat{y}_i$. residual could be positive, negative or zero. 
+* `predicted`: an $n$ by 1 matrix representing the predicted value for each observation. For a given observation $i$, the $i$th element of the matrix is given by $\hat{y}_i$.
+
+If we are only interested in the coefficients component of the output,
+```{r}
+mlm$coef
+```
+If we would like to see the conf_interval component of the output,
+```{r}
+mlm$conf_interval
+```
+
+### Plotting all observations into a graph
+
+We can use the results of the `simp_lin_R` command to draw a scatter plot of the observed relation versus our estimated line of best fit.
+
+```{r}
+plot(mtcars$mpg~mtcars$wt, xlab = 'wt', ylab = 'mpg', pch = 20)
+abline(a = mlm$coef[1,1], b = mlm$coef[2,1], lty = 'dashed')
+```
+
+Based on this graph, our estimated line can fit the test data well.
